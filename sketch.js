@@ -1,13 +1,10 @@
 let video;
-let poseNet;
-let poses = [];
-let leftWrist = null;
-let rightWrist = null;
 
 function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
   video.size(width, height);
+  video.hide(); // 隱藏預設的 video 標籤
 }
 
 function draw() {
