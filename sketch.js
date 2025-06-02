@@ -6,7 +6,7 @@ function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
   video.size(640, 480);
-  video.hide();
+  // video.hide(); // 先註解這行
 
   handpose = ml5.handpose(video, modelReady);
   handpose.on("predict", results => {
@@ -19,6 +19,8 @@ function modelReady() {
 }
 
 function draw() {
+  background(200);
+  console.log(video);
   image(video, 0, 0, width, height);
   drawHands();
 }
