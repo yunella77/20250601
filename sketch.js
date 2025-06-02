@@ -1,44 +1,41 @@
-let video;
-let facemesh;
-let predictions = [];
+let handpose;
+let hands = [];
 
 function setup() {
-  createCanvas(480, 640); 
+  createCanvas(480, 640);
   video = createCapture(VIDEO);
-  video.size(480, 640);
+  video.size(width, height);
   video.hide();
 
-  facemesh = ml5.facemesh(video, modelReady);
-  facemesh.on("predict", results => {
-    predictions = results;
+  handpose = ml5.handpose(video, () => {
+    console.log("Handpose model ready!");
   });
-}
 
-function modelReady() {
-  console.log("Facemesh model ready!");
+  handpose.on("predict", results => {
+    hands = results;
+  });
 }
 
 function draw() {
   image(video, 0, 0, width, height);
 
-  if (predictions.length > 0) {
-    const keypoints = predictions[0].scaledMesh;
-
-// 畫出左手和右手
-    stroke(0, 255, 0);
-    beginShape();
-    for (let i = 0; i < keypoints.length; i++) {
-      const x = keypoints[i][0];
-      const y = keypoints[i][1];
-      vertex(x, y);
+  // 如果偵測到手
+  for (let hand of hands) {
+    for (let i = 0; i < hand.landmarks.length; i++) {
+      let [x, y, z] = hand.landmarks[i];
+      fill(0, 255, 0);
+      noStroke();
+      ellipse(x, y, 10);
     }
-    endShape(CLOSE);
-// 畫出臉部關鍵點
-    stroke(255, 0, 0);
-    for (let i = 0; i < keypoints.length; i++) {
-      const x = keypoints[i][0];
-      const y = keypoints[i][1];
-      point(x, y);
+
+    // 抓住判定：拇指尖 (4) 跟 食指尖 (8) 接近
+    let thumbTip = hand.landmarks[4];
+    let indexTip = hand.landmarks[8];
+    let d = dist(thumbTip[0], thumbTip[1], indexTip[0], indexTip[1]);
+    if (d < 30) {
+      fill(255, 0, 0);
+      textSize(32);
+      text("抓到了！", 10, 30);
     }
   }
 }
