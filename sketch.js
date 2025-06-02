@@ -3,9 +3,9 @@ let facemesh;
 let predictions = [];
 
 function setup() {
-  createCanvas(480, 640);
+  createCanvas(480, 640); 
   video = createCapture(VIDEO);
-  video.size(width, height);
+  video.size(480, 640);
   video.hide();
 
   facemesh = ml5.facemesh(video, modelReady);
@@ -24,13 +24,21 @@ function draw() {
   if (predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
 
-    // 範例：畫出鼻子與左眼、右眼
-    fill(0, 255, 0);
-    noStroke();
-
-    // 鼻尖：168，左眼：33，右眼：263
-    ellipse(keypoints[168][0], keypoints[168][1], 10); // 鼻尖
-    ellipse(keypoints[33][0], keypoints[33][1], 10);   // 左眼
-    ellipse(keypoints[263][0], keypoints[263][1], 10); // 右眼
+// 畫出左手和右手
+    stroke(0, 255, 0);
+    beginShape();
+    for (let i = 0; i < keypoints.length; i++) {
+      const x = keypoints[i][0];
+      const y = keypoints[i][1];
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+// 畫出臉部關鍵點
+    stroke(255, 0, 0);
+    for (let i = 0; i < keypoints.length; i++) {
+      const x = keypoints[i][0];
+      const y = keypoints[i][1];
+      point(x, y);
+    }
   }
 }
