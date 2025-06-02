@@ -3,7 +3,7 @@ let facemesh;
 let predictions = [];
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(480, 640);
   video = createCapture(VIDEO);
   video.size(width, height);
   video.hide();
